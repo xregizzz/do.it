@@ -17,4 +17,20 @@ export const Content = styled.div`
   span {
     color: #c85311;
   }
+
+  div {
+    flex: 1;
+    display: flex;
+    margin-top: 1rem;
+  }
+
+  button + button {
+    margin-left: 1rem;
+  }
+
+  p {
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+    flex-wrap: wrap;
+  }
 `;
