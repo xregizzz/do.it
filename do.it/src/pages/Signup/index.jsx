@@ -10,7 +10,7 @@ import api from "../../services/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-function Signup() {
+function Signup({ authenticated }) {
   const schema = yup.object().shape({
     name: yup.string().required("Campo Obrigatorio!"),
     email: yup.string().email("Email invalido").required("Campo Obrigatorio!"),
@@ -33,6 +33,10 @@ function Signup() {
   });
 
   const navigate = useNavigate();
+
+  if (authenticated) {
+    return navigate("/dashboard");
+  }
 
   function onSubmitFunction({ name, email, password }) {
     const user = { name, email, password };

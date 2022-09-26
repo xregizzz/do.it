@@ -10,7 +10,7 @@ import api from "../../services/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function Login({ authenticated, setAuthenticated }) {
   const schema = yup.object().shape({
     email: yup.string().email("Email invalido").required("Campo Obrigatorio!"),
     password: yup.string().required("Campo Obrigatorio!"),
@@ -26,15 +26,22 @@ function Login() {
 
   const navigate = useNavigate();
 
-  function onSubmitFunction({ email, password }) {
-    const request = { email, password };
+  function onSubmitFunction(data) {
     api
-      .post("/user/login", request)
-      .then((_) => {
-        toast.success("Sucesso ao logar!");
+      .post("/user/login", data)
+      .then((response) => {
+        const { token } = response.data;
+        localStorage.setItem("@Doit:token", JSON.stringify(token));
+
+        setAuthenticated(true);
+
         return navigate("/dashboard");
       })
-      .catch((_) => toast.error("Erro ao logar, tente novamente"));
+      .catch((_) => toast.error("Email ou senha invalidos, tente novamente"));
+  }
+
+  if (authenticated) {
+    return navigate("/dashboard");
   }
 
   return (
