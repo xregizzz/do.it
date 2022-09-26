@@ -2,7 +2,7 @@ import { Container, Background, Content, AnimationContainer } from "./styles";
 import Button from "../../components/Button";
 import { Link } from "react-router-dom";
 import Input from "../../components/Input";
-import { FiUser, FiMail, FiLock } from "react-icons/fi";
+import { FiMail, FiLock } from "react-icons/fi";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,18 +10,10 @@ import api from "../../services/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-function Signup() {
+function Login() {
   const schema = yup.object().shape({
-    name: yup.string().required("Campo Obrigatorio!"),
     email: yup.string().email("Email invalido").required("Campo Obrigatorio!"),
-    password: yup
-      .string()
-      .min(8, "Minimo de 8 digitos")
-      .required("Campo Obrigatorio!"),
-    passwordConfirm: yup
-      .string()
-      .oneOf([yup.ref("password")], "Senhas nao conferem")
-      .required("Campo obrigatorio!"),
+    password: yup.string().required("Campo Obrigatorio!"),
   });
 
   const {
@@ -34,33 +26,23 @@ function Signup() {
 
   const navigate = useNavigate();
 
-  function onSubmitFunction({ name, email, password }) {
-    const user = { name, email, password };
+  function onSubmitFunction({ email, password }) {
+    const request = { email, password };
     api
-      .post("/user/register", user)
+      .post("/user/login", request)
       .then((_) => {
-        toast.success("Sucesso ao criar a conta!");
-        return navigate("/login");
+        toast.success("Sucesso ao logar!");
+        return navigate("/dashboard");
       })
-      .catch((_) => toast.error("Erro ao criar a conta, tente outro email"));
+      .catch((_) => toast.error("Erro ao logar, tente novamente"));
   }
 
   return (
     <Container>
-      <Background />
       <Content>
         <AnimationContainer>
           <form onSubmit={handleSubmit(onSubmitFunction)}>
-            <h1>Cadastro</h1>
-            <Input
-              error={errors.name?.message}
-              register={register}
-              name="name"
-              icon={FiUser}
-              label="Nome"
-              placeholder="Seu nome"
-              type="text"
-            />
+            <h1>Login</h1>
             <Input
               error={errors.email?.message}
               register={register}
@@ -79,24 +61,16 @@ function Signup() {
               placeholder="Uma senha bem segura"
               type="password"
             />
-            <Input
-              error={errors.passwordConfirm?.message}
-              register={register}
-              name="passwordConfirm"
-              icon={FiLock}
-              label="Confirmação da senha"
-              placeholder="Confirmção de senha"
-              type="password"
-            />
             <Button type="submit">Enviar</Button>
             <p>
-              Já tem uma conta? Faça seu <Link to="/login">login</Link>
+              Não possui uma conta? Faça seu <Link to="/signup">cadastro</Link>
             </p>
           </form>
         </AnimationContainer>
       </Content>
+      <Background />
     </Container>
   );
 }
 
-export default Signup;
+export default Login;
