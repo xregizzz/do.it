@@ -9,6 +9,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import api from "../../services/api";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 function Login({ authenticated, setAuthenticated }) {
   const schema = yup.object().shape({
@@ -40,9 +41,12 @@ function Login({ authenticated, setAuthenticated }) {
       .catch((_) => toast.error("Email ou senha invalidos, tente novamente"));
   }
 
-  if (authenticated) {
-    return navigate("/dashboard");
-  }
+  useEffect(() => {
+    if (authenticated) {
+      return navigate("/dashboard");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authenticated, navigate]);
 
   return (
     <Container>
